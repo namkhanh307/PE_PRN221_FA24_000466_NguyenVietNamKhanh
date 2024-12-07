@@ -35,5 +35,16 @@ namespace PharmaceuticalManagement_NguyenVietNamKhanh.Pages
             }
 
         }
+
+        public void OnGetLogout()
+        {
+            Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+            Response.Headers["Pragma"] = "no-cache";
+            Response.Headers["Expires"] = "-1";
+            HttpContext.Session.Clear();
+            HttpContext.Session.Remove("Role");
+            Response.Redirect("Login");
+        }
+
     }
 }

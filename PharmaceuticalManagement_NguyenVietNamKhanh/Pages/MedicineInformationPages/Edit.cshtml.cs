@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -51,6 +52,27 @@ namespace PharmaceuticalManagement_NguyenVietNamKhanh.Pages.MedicineInformationP
 
             try
             {
+                if (string.IsNullOrEmpty(MedicineInformation.ActiveIngredients))
+                {
+                    ModelState.AddModelError("MedicineInformation.ActiveIngredients", "Active ingredient is required");
+                    return Page();
+                }
+
+                if (Regex.IsMatch(MedicineInformation.ActiveIngredients, @"[#@&()]"))
+                {
+                    ModelState.AddModelError("MedicineInformation.ActiveIngredients", "Invalid value for active ingredient");
+                    return Page();
+                }
+
+                var words = MedicineInformation.ActiveIngredients.Split(' ');
+                foreach (var word in words)
+                {
+                    if (!Regex.IsMatch(word, @"^[A-Z0-9]"))
+                    {
+                        ModelState.AddModelError("MedicineInformation.ActiveIngredients", "Invalid value for active ingredient");
+                        return Page();
+                    }
+                }
                 await _miRepo.Update(MedicineInformation);
             }
             catch (DbUpdateConcurrencyException)

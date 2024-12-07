@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Delete";
     string? role = HttpContext.Session.GetString("Role");
-    @if (role == null || role.Equals("3"))
+    @if (role == null || !role.Equals("2"))
     {
         Response.Redirect("/Error");
     }

@@ -3,8 +3,8 @@
 
 @{
     ViewData["Title"] = "Details";
-    string role = HttpContext.Session.GetString("Role");
-    if (!role.Equals("3") && !role.Equals("2"))
+    string? role = HttpContext.Session.GetString("Role");
+    if (role == null || (!role.Equals("3") && !role.Equals("2")))
     {
         Response.Redirect("/Error");
     }

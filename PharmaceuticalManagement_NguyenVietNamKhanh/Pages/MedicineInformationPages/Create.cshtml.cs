@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using PharmaceuticalManagement_BO.Models;
 using PharmaceuticalManagement_Repo;
+using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace PharmaceuticalManagement_NguyenVietNamKhanh.Pages.MedicineInformationPages
 {
@@ -19,7 +23,7 @@ namespace PharmaceuticalManagement_NguyenVietNamKhanh.Pages.MedicineInformationP
 
         public async Task<IActionResult> OnGet()
         {
-            ViewData["ManufacturerId"] = new SelectList(await _mRepo.Get(), "ManufacturerId", "ManufacturerId");
+            ViewData["ManufacturerId"] = new SelectList(await _mRepo.Get(), "ManufacturerId", "ManufacturerName");
             return Page();
         }
 
@@ -41,12 +45,36 @@ namespace PharmaceuticalManagement_NguyenVietNamKhanh.Pages.MedicineInformationP
                 await PopulateMI();
                 return Page();
             }
+            if (string.IsNullOrEmpty(MedicineInformation.ActiveIngredients))
+            {
+                ModelState.AddModelError("MedicineInformation.ActiveIngredients", "Active ingredient is required");
+                await PopulateMI();
+                return Page();
+            }
+
+            if (Regex.IsMatch(MedicineInformation.ActiveIngredients, @"[#@&()]"))
+            {
+                ModelState.AddModelError("MedicineInformation.ActiveIngredients", "Invalid value for active ingredient");
+                await PopulateMI();
+                return Page();
+            }
+
+            var words = MedicineInformation.ActiveIngredients.Split(' ');
+            foreach (var word in words)
+            {
+                if (!Regex.IsMatch(word, @"^[A-Z0-9]"))
+                {
+                    ModelState.AddModelError("MedicineInformation.ActiveIngredients", "Invalid value for active ingredient");
+                    await PopulateMI();
+                    return Page();
+                }
+            }
             await _miRepo.Add(MedicineInformation);
             return RedirectToPage("./Index");
         }
         private async Task PopulateMI()
         {
-            ViewData["ManufacturerId"] = new SelectList(await _mRepo.Get(), "ManufacturerId", "ManufacturerId");
+            ViewData["ManufacturerId"] = new SelectList(await _mRepo.Get(), "ManufacturerId", "ManufacturerName");
         }
     }
 }

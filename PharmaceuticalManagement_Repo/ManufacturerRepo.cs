@@ -16,10 +16,6 @@ namespace PharmaceuticalManagement_Repo
         {             
             _baseDAO = baseDAO; 
         }
-        public async Task<bool> Add(Manufacturer entity) => await _baseDAO.Add(entity);
-        public async Task<bool> Delete(Manufacturer entity) => await _baseDAO.Delete(entity);
         public async Task<IList<Manufacturer>> Get() => await _baseDAO.Get();
-        public async Task<Manufacturer?> GetById(string id) => await _baseDAO.GetById(id, "ManufacturerId");
-        public async Task<bool> Update(Manufacturer entity) => await _baseDAO.Update(entity);
     }
 }
