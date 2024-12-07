@@ -1,0 +1,129 @@
+﻿@page
+@model PharmaceuticalManagement_NguyenVietNamKhanh.Pages.MedicineInformationPages.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+    string? role = HttpContext.Session.GetString("Role");
+    if (role == null  || (!role.Equals("3") && !role.Equals("2")))
+    {
+        Response.Redirect("/Error");
+    }
+}
+
+<h1>Index</h1>
+@if (role == null || role.Equals("2"))
+{
+    <p>
+        <a asp-page="Create">Create New</a>
+    </p>
+}
+
+<form id="searchForm" method="get" asp-page="./Index" class="mb-3">
+    <div class="row">
+         <div class="col-md-3">
+            <div class="form-group">
+                <label for="activeIngredients">Active Ingredients</label>
+                <input type="text" name="activeIngredients" class="form-control" id="activeIngredients" value="@Request.Query["activeIngredients"]" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="expirationDate">Expiration Date</label>
+                <input type="text" name="expirationDate" class="form-control" id="expirationDate" value="@Request.Query["expirationDate"]" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="warningsAndPrecautions">Warnings And Precautions</label>
+                <input type="text" name="warningsAndPrecautions" class="form-control" id="warningsAndPrecautions" value="@Request.Query["warningsAndPrecautions"]" />
+            </div>
+        </div> 
+         <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="button" class="btn btn-primary me-2" onclick="clearFields()">Clear</button>
+        </div> 
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MedicineInformation[0].MedicineName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MedicineInformation[0].ActiveIngredients)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MedicineInformation[0].ExpirationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MedicineInformation[0].DosageForm)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MedicineInformation[0].WarningsAndPrecautions)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MedicineInformation[0].Manufacturer.ManufacturerName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.MedicineInformation) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MedicineName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActiveIngredients)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpirationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DosageForm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WarningsAndPrecautions)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Manufacturer.ManufacturerName)
+            </td>
+            <td>
+                    @if (role == null || role.Equals("2"))
+                    {
+                        <a asp-page="./Edit" asp-route-id="@item.MedicineId">Edit</a>
+                        <a asp-page = "./Delete" asp-route-id = "@item.MedicineId">Delete</a>
+                    }
+                    <a asp-page="./Details" asp-route-id="@item.MedicineId">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<div class="d-flex justify-content-between align-items-center my-3">
+    <div>
+        @if (Model.CurrentPage > 1)
+        {
+            <a class="btn btn-sm btn-info me-1" asp-page="./Index" asp-route-activeIngredients="@Request.Query["activeIngredients"]" asp-route-expirationDate="@Request.Query["expirationDate"]" asp-route-warningsAndPrecautions="@Request.Query["warningsAndPrecautions"]" asp-route-pageNumber="@(Model.CurrentPage - 1)">Previous</a>
+        }
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <a class="btn btn-sm @(i == Model.CurrentPage ? "btn-primary" : "btn-light") me-1" asp-page="./Index" asp-route-activeIngredients="@Request.Query["activeIngredients"]" asp-route-expirationDate="@Request.Query["expirationDate"]" asp-route-warningsAndPrecautions="@Request.Query["warningsAndPrecautions"]" asp-route-pageNumber="@i">@i</a>
+        }
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <a class="btn btn-sm btn-info me-1" asp-page="./Index" asp-route-activeIngredients="@Request.Query["activeIngredients"]" asp-route-expirationDate="@Request.Query["expirationDate"]" asp-route-warningsAndPrecautions="@Request.Query["warningsAndPrecautions"]" asp-route-pageNumber="@(Model.CurrentPage + 1)">Next</a>
+        }
+    </div>
+</div>
+<script>
+    function clearFields() {
+        document.getElementById('warningsAndPrecautions').value = '';
+        document.getElementById('expirationDate').value = '';
+        document.getElementById('activeIngredients').value = '';
+        document.getElementById('searchForm').submit();
+    }
+</script>
