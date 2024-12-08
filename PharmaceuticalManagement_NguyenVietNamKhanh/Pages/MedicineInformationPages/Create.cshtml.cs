@@ -23,7 +23,7 @@ namespace PharmaceuticalManagement_NguyenVietNamKhanh.Pages.MedicineInformationP
 
         public async Task<IActionResult> OnGet()
         {
-            ViewData["ManufacturerId"] = new SelectList(await _mRepo.Get(), "ManufacturerId", "ManufacturerName");
+            ViewData["ManufacturerName"] = new SelectList(await _mRepo.Get(), "ManufacturerId", "ManufacturerName");
             return Page();
         }
 
@@ -74,7 +74,7 @@ namespace PharmaceuticalManagement_NguyenVietNamKhanh.Pages.MedicineInformationP
         }
         private async Task PopulateMI()
         {
-            ViewData["ManufacturerId"] = new SelectList(await _mRepo.Get(), "ManufacturerId", "ManufacturerName");
+            ViewData["ManufacturerName"] = new SelectList(await _mRepo.Get(), "ManufacturerId", "ManufacturerName");
         }
     }
 }

@@ -15,10 +15,12 @@ namespace PharmaceuticalManagement_NguyenVietNamKhanh.Pages.MedicineInformationP
     public class EditModel : PageModel
     {
         private readonly IMedicineInformationRepo _miRepo;
+        private readonly IManufacturerRepo _mRepo;
 
-        public EditModel(IMedicineInformationRepo miRepo)
+        public EditModel(IMedicineInformationRepo miRepo, IManufacturerRepo mRepo)
         {
             _miRepo = miRepo;
+            _mRepo = mRepo; 
         }
 
         [BindProperty]
@@ -37,7 +39,7 @@ namespace PharmaceuticalManagement_NguyenVietNamKhanh.Pages.MedicineInformationP
                 return NotFound();
             }
             MedicineInformation = medicineinformation;
-            ViewData["ManufacturerId"] = new SelectList(await _miRepo.Get(), "ManufacturerId", "ManufacturerId");
+            ViewData["ManufacturerName"] = new SelectList(await _mRepo.Get(), "ManufacturerId", "ManufacturerName");
             return Page();
         }
 
